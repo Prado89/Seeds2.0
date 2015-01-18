@@ -3,7 +3,7 @@ package it.polimi.seeds;
 
 public class Player {
 
-    /* In Player implemento i metodi relativi agli spostamenti all'interno del campo di gioco del singolo giocatore. */
+    /* In Player there are the methods related to the internal movements (the only ones involving only its Bowls)*/
     public int name;
     public int container[] = new int [7];
 
@@ -17,7 +17,7 @@ public class Player {
 
     public int checkBowl(int[] container){
 
-    	/* Controlla se i Bowls del giocatore sono tutti vuoti. */
+    	/* Check if all Bowls are empties */
 
         int i;
         int totNumOfSeeds = 0;
@@ -35,7 +35,7 @@ public class Player {
 
     public void finalMove(int[] container){
 
-    	/* Sposta tutti i seeds nel Tray. E' la mossa finale del gioco. */
+    	/* Move all the Seeds into the Tray. It' the final move of the game */
 
         int i;
 

@@ -18,8 +18,9 @@ public class Game {
     public int container[] = new int[14];
     public Player player[]=new Player[2];
 
-    public Player[] createPrivatePlayer(Player[] player, Player player1, Player player2){
 
+
+    public Player[] createPrivatePlayer(Player[] player, Player player1, Player player2){
         player[0]=player1;
         player[1]=player2;
         return player;
@@ -50,60 +51,28 @@ public class Game {
     	 * lancia i metodi che implementano le regole del gioco, la situazione dei giocatori a turno terminato
     	 * e il calcolo sull'eventuale vincitore */
 
-        int i;
+        if (input>=0 && input<=5) {
+            container = createContainer(container, player1, player2);
+            player = createPrivatePlayer(player, player1, player2);
 
-        System.out.println("giocatore 1:");
-        for (i=0;i<7;i++){
-            System.out.println(player1.container[i]);
-        }
-        System.out.println("giocatore 2");
-        for (i=0;i<7;i++){
-            System.out.println(player2.container[i]);
-        }
+            if (state.equals("stopped")) {
+                return;
+            } else if (state.equals("paused")) {
+                state = "active";
+            } else if (state.equals("active")) {
 
-        System.out.println("Giocatore");
-        System.out.println(this.round);
+                playerController(state, player1, player2, player, container, winner, dateTime, input);
+                createMyPlayer(player1, player2, container);
+                checkWinner(player, winner, dateTime, state);
 
-        while(input<0||input>5){
-            System.out.println("scegli una mossa valida -da 0 a 5-:");
-            InputStreamReader reader = new InputStreamReader (System.in);
-            BufferedReader myInput = new BufferedReader (reader);
-            String str= new String();
-            try {
-                str = myInput.readLine();
             }
-            catch (IOException e) {
-                System.out.println ("Si � verificato un errore: " + e);
-                System.exit(-1);
-            }
-
-            input=Integer.parseInt(str);/*select the bowl to begin the game */
         }
-        container=createContainer(container, player1, player2);
-        player=createPrivatePlayer(player, player1, player2);
-
-        if (state.equals("stopped")){
-            return;
-        }
-        else if (state.equals("paused")){
-            state = "active";
-        }
-        else if (state.equals("active")){
-
-            playerController(state, player1, player2, player, container, winner, dateTime, input);
-            createMyPlayer(player1, player2, container);
-            checkWinner(player, winner, dateTime, state);
-
-            System.out.println("C'� un vincitore?");
-            System.out.println(winner);
-
-
-        }
+        else return;
     }
 
     public void checkWinner(Player[] player, int winner, String dateTime, String state){
 
-    	/* Controlla se c'� un vincitore ed, eventualmente, che giocatore �. Termina il gioco e salva data e ora.*/
+    	/* Check if there is a winner and plot it. Stop the game and save date and time.*/
 
         int i;
 
@@ -178,7 +147,7 @@ public class Game {
 
     public int move(int flag, int[] container){
 
-    	/* Semina i seeds prelevati nei successivi container. */
+    	/* Move the Seeds I took and put it in the next Containers */
 
         int selectedNumOfSeeds;
         int j;
@@ -202,7 +171,7 @@ public class Game {
 
     public void changeRound(){
 
-    	/* Cambia il turno. */
+    	/* Change the round */
 
         if (this.round == 1){
             this.round = 2;
@@ -214,7 +183,7 @@ public class Game {
 
     public void captureSeeds(int last, int[] container){
 
-    	/* Esegue il furto di seeds dal container opposto*/
+    	/* Capture the Seeds from the opponent's side */
 
         if (this.round==1){
             container[6]=container[6]+container[12-last];
@@ -225,6 +194,24 @@ public class Game {
             container[13]=container[13]+container[5-last];
             container[5-last]=0;
         }
+
+    }
+
+    public void initGame(){
+        int i;
+	    /* initializing the game */
+        this.state = "active";
+        this.round = 1;
+        this.winner = 0;
+        this.player1.name = 1;
+        this.player2.name = 1;
+
+        for (i = 0; i <= 5; i++) {
+            this.player1.container[i] = 3;
+            this.player2.container[i] = 3;
+        }
+        this.player1.container[6] = 0;
+        this.player2.container[6] = 0;
 
     }
 
