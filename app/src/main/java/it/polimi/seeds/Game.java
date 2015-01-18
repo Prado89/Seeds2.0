@@ -197,7 +197,7 @@ public class Game {
 
     }
 
-    public void initGame(){
+    public void initGame(){     //first set of data to begin the game
         int i;
 	    /* initializing the game */
         this.state = "active";

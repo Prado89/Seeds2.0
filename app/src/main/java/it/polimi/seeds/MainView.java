@@ -17,6 +17,10 @@ public class MainView extends Activity implements View.OnClickListener {
     public Game game=new Game();
     public LinearLayout pl1;
     public LinearLayout pl2;
+    public TextView win;
+    public TextView round;
+    public Button tray1;
+    public Button tray2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,25 +30,45 @@ public class MainView extends Activity implements View.OnClickListener {
 
         this.game.initGame(); //initializing the game
 
-        /*initializing the views*/
-        TextView win = (TextView) findViewById(R.id.Winner);
-        if (game.winner == 1 || game.winner == 2) {
+        this.win = (TextView) findViewById(R.id.Winner);    //defining and initializing the views
+        this.round = (TextView) findViewById(R.id.Round);
+        this.tray1 = (Button) findViewById(R.id.Tray1);
+        this.tray2 = (Button) findViewById(R.id.Tray2);
+        this.pl1 = (LinearLayout) findViewById(R.id.player1);
+        this.pl2 = (LinearLayout) findViewById(R.id.player2);
+        firstView();
+
+        game.gameController(game.state, game.player1, game.player2, game.player, game.container, game.winner, game.dateTime, game.input);
+                                                                    //first call of the game...
+        for (int ii = 0; ii < pl1.getChildCount(); ii++) {          //setting listener
+            View view = pl1.getChildAt(ii);
+            Button button = (Button) view;
+            button.setOnClickListener(this);
+            button.setId(ii);
+            button.setText(Integer.toString(game.player1.container[ii]));
+        }
+
+        for (int ii = pl2.getChildCount()-1; ii >=0; ii--) {
+            View view = pl2.getChildAt(ii);
+            Button button = (Button) view;
+            button.setOnClickListener(this);
+            button.setId(12-ii);
+            button.setText(Integer.toString(game.player2.container[ii]));
+        }
+
+        disableButton();        //disable all buttons
+        updateButton();         //and enable only the buttons of the right player
+        }
+
+    private void firstView() {                          //initialize the first view of the game
+        if (game.winner == 1 || game.winner == 2) {     //it's the first set of data
             win.setText("The winner is player ");
             win.append(Integer.toString(game.winner));
         }
-
-        TextView round = (TextView) findViewById(R.id.Round);
         round.setText("Round ");
         round.append(Integer.toString(game.round));
-
-        Button tray1 = (Button) findViewById(R.id.Tray1);
         tray1.setText(Integer.toString(game.player1.container[6]));
-
-        Button tray2 = (Button) findViewById(R.id.Tray2);
         tray2.setText(Integer.toString(game.player2.container[6]));
-
-        this.pl1 = (LinearLayout) findViewById(R.id.player1);
-        this.pl2 = (LinearLayout) findViewById(R.id.player2);
 
         for (int ii = 0; ii < 5; ii++) {
             View view1 = pl1.getChildAt(ii);
@@ -54,29 +78,7 @@ public class MainView extends Activity implements View.OnClickListener {
             Button button2 = (Button) view2;
             button2.setText(Integer.toString(game.player2.container[ii]));
         }
-
-        game.gameController(game.state, game.player1, game.player2, game.player, game.container, game.winner, game.dateTime, game.input);
-
-           for (int ii = 0; ii < pl1.getChildCount(); ii++) {
-                View view = pl1.getChildAt(ii);
-                Button button = (Button) view;
-                button.setOnClickListener(this);
-               button.setId(ii);
-                button.setText(Integer.toString(game.player1.container[ii]));
-
-           }
-
-           for (int ii = pl2.getChildCount()-1; ii >=0; ii--) {
-                View view = pl2.getChildAt(ii);
-                Button button = (Button) view;
-                button.setOnClickListener(this);
-               button.setId(12-ii);
-                button.setText(Integer.toString(game.player2.container[ii]));
-
-            }
-        disableButton();
-        updateButton();
-        }
+    }
 
     @Override
     public void onClick(View view) {
@@ -86,9 +88,9 @@ public class MainView extends Activity implements View.OnClickListener {
         updateButton();
     }
 
-    public void updateButton(){
-        for (int ii = 0; ii < pl1.getChildCount(); ii++) {
-            View view = pl1.getChildAt(ii);
+    public void updateButton(){                                 //enabling only buttons containing some seeds
+        for (int ii = 0; ii < pl1.getChildCount(); ii++) {      //and of the right player
+            View view = pl1.getChildAt(ii);                     //set the new views
             Button button = (Button) view;
             button.setText(Integer.toString(game.player1.container[ii]));
             if(game.round==1&&game.player1.container[ii]!=0){
@@ -96,7 +98,7 @@ public class MainView extends Activity implements View.OnClickListener {
             }
         }
 
-        for (int ii = 0; ii < pl2.getChildCount(); ii++) {
+        for (int ii = pl2.getChildCount()-1; ii >=0; ii--) {
             View view = pl2.getChildAt(ii);
             Button button = (Button) view;
             button.setText(Integer.toString(game.player2.container[ii]));
@@ -104,9 +106,18 @@ public class MainView extends Activity implements View.OnClickListener {
                 button.setEnabled(true);
             }
         }
+
+        if (game.winner == 1 || game.winner == 2) {
+            win.setText("The winner is player ");
+            win.append(Integer.toString(game.winner));
+        }
+        round.setText("Round ");
+        round.append(Integer.toString(game.round));
+        tray1.setText(Integer.toString(game.player1.container[6]));
+        tray2.setText(Integer.toString(game.player2.container[6]));
     }
 
-    public void disableButton(){
+    public void disableButton(){                            //disabling all buttons
 
         for (int ii = 0; ii < pl1.getChildCount(); ii++) {
             View view = pl1.getChildAt(ii);
@@ -116,7 +127,7 @@ public class MainView extends Activity implements View.OnClickListener {
 
         }
 
-        for (int ii = 0; ii < pl2.getChildCount(); ii++) {
+        for (int ii = pl2.getChildCount()-1; ii >=0; ii--) {
             View view = pl2.getChildAt(ii);
             Button button = (Button) view;
             button.setText(Integer.toString(game.player2.container[ii]));
